@@ -1,0 +1,13 @@
+{
+  "name": "dayshedule",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "moment": "^2.24.0",
+    "yargs": "^13.2.4"
+  },
+  "scripts": {
+    "start": "node index.js"
+  }
+}
