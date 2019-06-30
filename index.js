@@ -1,6 +1,16 @@
-const yargs = require('yargs');
 const shedule = require('./shedule');
-const argv = yargs.argv;
+const argv = require('yargs')
+  .alias('c', 'current')
+  .describe('c', 'Print current task title')
+  .alias('n', 'next')
+  .describe('n','Print next task title')
+  .alias('d','duration')
+  .describe('d','Print task duration')
+  .boolean(['c','n','d'])
+  .alias('e','edit')
+  .describe('e','Edit shedule entry, default: today')
+  .alias('h','help')
+  .argv
 
 let output = "";
 let task = null;
