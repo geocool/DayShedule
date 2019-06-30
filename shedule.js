@@ -1,3 +1,4 @@
+const { spawn } = require('child_process');
 const fs = require("fs");
 const moment = require("moment");
 const DATE_FORMAT = "YYYY.MM.DD";
@@ -89,8 +90,14 @@ function readDateFile(date) {
 }
 
 function parseTask(line) {
-  const regex = /(?<start>\d{2}:\d{2})\s-\s(?<end>\d{2}:\d{2})\s:\s(?<title>[\w-_]*)/;
-  return line.match(regex).groups;
+  const regex = /(?<start>\d{2}:\d{2})\s-\s(?<end>\d{2}:\d{2})\s:\s(?<title>.*)/;
+  const task = line.match(regex).groups; 
+  
+  if (task) {
+    task.title = task.title.trim();
+  }
+
+  return task;
 }
 
 function textToDate(text) {
@@ -115,9 +122,38 @@ function calcTaskProgress() {
   return progressDurationInMinutes;
 }
 
+function edit(date) {
+  if (moment.isMoment(date)) {
+    editDateEntry(date);
+  } else if (typeof date === "string") {
+    switch (date) {
+      case "today": 
+        const today = moment();
+        editDateEntry(today);
+        break;
+      case "tomorrow":
+        const tomorrow = moment().add(1, 'day').endOf('day');
+        editDateEntry(tomorrow);
+    }
+  }
+}
+
+function editDateEntry(date) {
+  const filename = dateToText(date);
+  
+  var editor = process.env.EDITOR || 'vi';
+  var child = spawn(editor, [`${DATE_PATH}/${filename}`], {
+      stdio: 'inherit'
+  });
+//  child.on('exit', function (e, code) {
+//      console.log("finished");
+//  });
+}
+
 module.exports = {
   currentTask,
   nextTask,
   calcTaskDuration,
   calcTaskProgress,
+  edit,
 }

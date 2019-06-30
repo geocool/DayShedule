@@ -5,27 +5,37 @@ const argv = yargs.argv;
 let output = "";
 let task = null;
 
-if (argv.current) {
-  task = shedule.currentTask;
-} else if (argv.next) {
-  task = shedule.nextTask;
+if (argv.edit) {
+  // TODO: Get date (Day, DD, DD.MM, DD.MM.YYYY)
+  // If no date args, edit today shedule
+  shedule.edit(typeof argv.edit === "string" ? argv.edit : "today");
+} else {
+  print();
 }
 
-
-if (task) {
-  output = task.title;
-}
-
-if (task && argv.duration) {
-  let progressDuration = "";
+function print() {
   if (argv.current) {
-    progressDuration = shedule.calcTaskProgress() + "/";
+    task = shedule.currentTask;
+  } else if (argv.next) {
+    task = shedule.nextTask;
   }
-
-  output += ` |${progressDuration}${shedule.calcTaskDuration(task)}|`;  
+  
+  
+  if (task) {
+    output = task.title;
+  }
+  
+  if (task && argv.duration) {
+    let progressDuration = "";
+    if (argv.current) {
+      progressDuration = shedule.calcTaskProgress() + "/";
+    }
+  
+    output += ` |${progressDuration}${shedule.calcTaskDuration(task)}|`;  
+  }
+  console.log(output);
 }
 
-console.log(output);
 
 // TODO:
 // Create --help with yangs
