@@ -45,7 +45,7 @@ function isCurrentTask(task) {
   return TODAY_DATE.isBetween(task.start, task.end);
 }
 
-function getTasks(date) {
+function getTasks(date = TODAY_DATE) {
   const dateExists = dateFileExists(date);
   if (dateExists) {
     return parseDateFile(date);
@@ -65,17 +65,19 @@ function parseDateFile(date) {
   if (data) {
     const lines = data.split("\n");
     const tasks = [];
+    let index = 0;
     for (const line of lines) {
       if (line) {
         const parsedTask = parseTask(line);
         const task = {
+          id: index,
           title: parsedTask.title,
           start: moment(`${dateToText(date)} ${parsedTask.start}`, `${DATE_FORMAT} HH:mm`),
           end: moment(`${dateToText(date)} ${parsedTask.end}`, `${DATE_FORMAT} HH:mm`),
         };
         
         tasks.push(task);
-
+        index++;
       }
     }
     return tasks;
@@ -151,6 +153,7 @@ function editDateEntry(date) {
 }
 
 module.exports = {
+  getTasks,
   currentTask,
   nextTask,
   calcTaskDuration,

@@ -43,6 +43,21 @@ function print() {
   
     output += ` |${progressDuration}${shedule.calcTaskDuration(task)}|`;  
   }
+
+  if (!argv.current && !argv.next) {
+    // TODO Get here if no arguments defined
+    const tasks = shedule.getTasks();
+    for(const task of tasks) {
+      const isCurrent = task.id === shedule.currentTask.id;
+      const currentTasksOutput = `${task.start.format('HH:mm')} - ${task.end.format('HH:mm')} : ${task.title}`;
+      if(isCurrent) {
+        output += "\033[0;36m" + currentTasksOutput + "\033[0m" +"\n";
+      } else {
+        output += currentTasksOutput + "\n";
+      }
+    }
+  }
+
   console.log(output);
 }
 
